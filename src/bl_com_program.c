@@ -12,11 +12,9 @@
 #include "HUART_interface.h"
 #include "Delay.h"
 
-#define DELAY_ONE_SECOND				5000
+#define 	DELAY_ONE_MS				1
 
-#define		APP_FLASH_SIZE				0xB000				//this is the max file size that can be recieved (44k)
-#define		APP1_FLASH_ADDRESS			0x08005000		
-#define		APP2_FLASH_ADDRESS			0x08008000
+#define		APP_FLASH_SIZE				0xC400				//this is the max file size that can be recieved (49k)
 
 
 #define		BL_CMD_WRITE_SECTOR			0
@@ -81,7 +79,7 @@ void BLcomm_handler(void)
 	{
 		if(writeDataCounter > 0)
 		{
-			// check the consecutivity of the received counter
+			/* check the consecutivity of the received counter */
 			if(BL_comm_header.req_counter == G_counter)
 			{
 				G_counter++;
@@ -93,7 +91,8 @@ void BLcomm_handler(void)
 			else{
 				status = BL_VERIFY_NOK;
 			}
-			Delay_ms(DELAY_ONE_SECOND);
+			/*	the delay is needed for syncronization with the PC	*/
+			Delay_ms(DELAY_ONE_MS);
 			HUART_errTransmit(UART_CHANNEL_1,(u8*)&status, 1);
 
 
@@ -121,7 +120,7 @@ void BLcomm_handler(void)
 		{
 			status = BL_VERIFY_NOK;
 		}
-		Delay_ms(DELAY_ONE_SECOND);
+		Delay_ms(DELAY_ONE_MS);
 		if(writeDataCounter >0)
 		{
 			HUART_errTransmit(UART_CHANNEL_1,(u8*)&status, 1);
@@ -143,7 +142,7 @@ void BLcomm_handler(void)
 
 		{
 
-			stage = STAGE_RECIEVE_DATA;
+			stage = STAGE_RECIEVE_DATA;		/*	changing stages means that you are now going to start to recieve only headers	*/
 			writeDataCounter = (new_app.fileSize/PAGE_SIZE_BYTES);
 			if(lastData = new_app.fileSize%PAGE_SIZE_BYTES)
 				writeDataCounter++;
@@ -151,7 +150,7 @@ void BLcomm_handler(void)
 			HUART_errRecieve(UART_CHANNEL_1,(u8*)&BL_comm_header,sizeof(BL_comm_header_t));
 		}
 
-		Delay_ms(DELAY_ONE_SECOND);
+		Delay_ms(DELAY_ONE_MS);
 		HUART_errTransmit(UART_CHANNEL_1,(u8*)&status, 1);
 
 		if(status == BL_VERIFY_NOK)

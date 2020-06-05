@@ -18,7 +18,7 @@ const UART_CFG_t UART_cfg [UART_MODULES_NUM]={
 				.DateSize    = UART_CR1_DATA_BITS_NUM,
 				.StopBit     = UART_CR2_STOP_BIT     ,
 				.LINstate 	 = UART_LIN_DISABLE		 ,
-				.BaudRate    = UART_BAUDRATE_9600
+				.BaudRate    = UART_BAUDRATE_115200
 		},
 
 		{
